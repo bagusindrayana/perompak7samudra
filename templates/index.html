@@ -160,15 +160,6 @@
                             </li>
                         `;
                     }
-                } else if(xhr.status != 200) {
-                    // error message
-                    result.innerHTML = `
-                        <li>
-                            <h1>Ops, ada masalah saat melakukan pencarian film : ${xhr.status}</h1>
-                        </li>
-                    `;
-                    loading.style.display = 'none';
-                    
                 }
                 
             }

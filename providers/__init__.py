@@ -12,10 +12,11 @@ class Provider(object):
         results = []
         for provider in self.providers:
             results += provider.search(query)
+        results = sorted(result, key=lambda k: k["title"])
         return results
     
     def get(self, link,providerName):
-        results = []
+        results = {}
         for provider in self.providers:
             if provider.__class__.__name__ == providerName:
                 results = provider.get(link)
