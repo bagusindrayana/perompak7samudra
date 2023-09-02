@@ -1,43 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perompak 7 Samudra</title>
+    <style>
+        .lds-spinner {
+            color: official;
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-spinner div {
+            transform-origin: 40px 40px;
+            animation: lds-spinner 1.2s linear infinite;
+        }
+
+        .lds-spinner div:after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 3px;
+            left: 37px;
+            width: 6px;
+            height: 18px;
+            border-radius: 20%;
+            background: #fff;
+        }
+
+        .lds-spinner div:nth-child(1) {
+            transform: rotate(0deg);
+            animation-delay: -1.1s;
+        }
+
+        .lds-spinner div:nth-child(2) {
+            transform: rotate(30deg);
+            animation-delay: -1s;
+        }
+
+        .lds-spinner div:nth-child(3) {
+            transform: rotate(60deg);
+            animation-delay: -0.9s;
+        }
+
+        .lds-spinner div:nth-child(4) {
+            transform: rotate(90deg);
+            animation-delay: -0.8s;
+        }
+
+        .lds-spinner div:nth-child(5) {
+            transform: rotate(120deg);
+            animation-delay: -0.7s;
+        }
+
+        .lds-spinner div:nth-child(6) {
+            transform: rotate(150deg);
+            animation-delay: -0.6s;
+        }
+
+        .lds-spinner div:nth-child(7) {
+            transform: rotate(180deg);
+            animation-delay: -0.5s;
+        }
+
+        .lds-spinner div:nth-child(8) {
+            transform: rotate(210deg);
+            animation-delay: -0.4s;
+        }
+
+        .lds-spinner div:nth-child(9) {
+            transform: rotate(240deg);
+            animation-delay: -0.3s;
+        }
+
+        .lds-spinner div:nth-child(10) {
+            transform: rotate(270deg);
+            animation-delay: -0.2s;
+        }
+
+        .lds-spinner div:nth-child(11) {
+            transform: rotate(300deg);
+            animation-delay: -0.1s;
+        }
+
+        .lds-spinner div:nth-child(12) {
+            transform: rotate(330deg);
+            animation-delay: 0s;
+        }
+
+        @keyframes lds-spinner {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        #loading {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
     <form action="#" id="form">
         <input type="text" name="query" id="query" placeholder="Cari Judul Film">
         <input type="submit" value="Cari" id="cari">
     </form>
 
-    <ul id="result"></ul>
+    <ul id="result">
+        
+    </ul>
+    <div class="lds-spinner" id="loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 
     <script>
         const form = document.querySelector('#form');
         const query = document.querySelector('#query');
         const result = document.querySelector('#result');
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
+            loading.style.display = 'block';
             const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     const jsonData = JSON.parse(xhr.responseText);
-                    
+
                     result.innerHTML = '';
-                    jsonData.forEach(function(data) {
+                    jsonData.forEach(function (data) {
                         result.innerHTML += `
                             <li>
                                 <a href="${data.detail}" target="_blank">${data.title}</a>
                             </li>
                         `;
                     });
+                    if(jsonData.lenght <= 0){
+                        result.innerHTML = `
+                            <li>
+                                <h1>Maaf, film yang anda cari tidak ditemukan</h1>
+                            </li>
+                        `;
+                    }
+                } else {
+                    // error message
+                    result.innerHTML = `
+                        <li>
+                            <h1>Ops, ada masalah saat melakukan pencarian film</h1>
+                        </li>
+                    `;
+                    
                 }
+                loading.style.display = 'none';
             }
             xhr.open('GET', '/api/search?query=' + query.value, true);
             xhr.send();
         });
     </script>
 </body>
+
 </html>

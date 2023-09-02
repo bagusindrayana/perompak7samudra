@@ -26,14 +26,20 @@ class PusatFilm(object):
 
             try:
                 text = r.text.replace("\n", "")
-                print(text)
                 jsonData = json.loads(text)
 
                 for data in jsonData["suggestions"]:
                     result.append(
                         {
-                            "link": "/api/get?link=" + data["url"] + "&provider=PusatFilm",
-                            "detail": "/detail?detail="+base64.b64encode(json.dumps({"link": data["url"], "provider": "PusatFilm"}).encode()).decode("utf-8"),
+                            "link": "/api/get?link="
+                            + data["url"]
+                            + "&provider=PusatFilm",
+                            "detail": "/detail?detail="
+                            + base64.b64encode(
+                                json.dumps(
+                                    {"link": data["url"], "provider": "PusatFilm"}
+                                ).encode()
+                            ).decode("utf-8"),
                             "title": data["value"],
                             "thumb": data["thumb"],
                         }
@@ -77,11 +83,11 @@ class PusatFilm(object):
         streamLinks = []
         for link in links:
             _r = base64.b64encode("https://51.79.193.133/".encode())
-            _url = base64.b64decode(link["data-frame"]).decode('utf-8')
+            _url = base64.b64decode(link["data-frame"]).decode("utf-8")
             if "uplayer" in _url:
-                _url += "&r="+_r.decode('utf-8')
-            _url = base64.b64encode(_url.encode()).decode('utf-8')
-            streamLinks.append({"link": "/iframe?link="+_url, "title": link.text})
+                _url += "&r=" + _r.decode("utf-8")
+            _url = base64.b64encode(_url.encode()).decode("utf-8")
+            streamLinks.append({"link": "/iframe?link=" + _url, "title": link.text})
 
         new_url = iframeSrc.replace("embed", "file")
         headers = {
@@ -97,14 +103,23 @@ class PusatFilm(object):
             "sec-fetch-site": "same-origin",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
             "x-requested-with": "XMLHttpRequest",
-           
         }
-        new_url = new_url.replace("https://kotakajaib.me/","")
+        new_url = new_url.replace("https://kotakajaib.me/", "")
         file_id = new_url.split("/")[1]
-        r_download = requests.request("GET", "https://kotakajaib.me/api/"+new_url+"/download", headers=headers)
+        r_download = requests.request(
+            "GET", "https://kotakajaib.me/api/" + new_url + "/download", headers=headers
+        )
         r_download_json = r_download.json()
         downloadLinks = []
         for link in r_download_json["result"]["mirrors"]:
-            downloadLinks.append({"link": "https://kotakajaib.me/mirror/"+link["server"]+"/"+file_id, "title": link["server"]})
-        result = {"title":title,"stream": streamLinks, "download": downloadLinks}
+            downloadLinks.append(
+                {
+                    "link": "https://kotakajaib.me/mirror/"
+                    + link["server"]
+                    + "/"
+                    + file_id,
+                    "title": link["server"],
+                }
+            )
+        result = {"title": title, "stream": streamLinks, "download": downloadLinks}
         return result

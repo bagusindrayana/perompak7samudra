@@ -1,9 +1,11 @@
 from . import PusatFilm
+from . import Muvi
 
 class Provider(object):
     def __init__(self, **kwargs):
         self.providers = [
-            PusatFilm.PusatFilm()
+            PusatFilm.PusatFilm(),
+            Muvi.Muvi()
         ]
 
     def search(self, query):
