@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Film : {{ data['title'] }}</title>
+</head>
+
+<body>
+    <h1>{{ data['title'] }}</h1>
+    <h3>Stream : </h3>
+    <ul>
+        {% for d in data['stream'] %}
+        <li>
+            <a href="{{ d['link'] }}">{{ d['title'] }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <h3>Download : </h3>
+    <ul>
+        {% for d in data['download'] %}
+            <li>
+                <a href="{{ d['link'] }}">{{ d['title'] }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

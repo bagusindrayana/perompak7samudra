@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perompak 7 Samudra</title>
+</head>
+<body>
+    <form action="#" id="form">
+        <input type="text" name="query" id="query" placeholder="Cari Judul Film">
+        <input type="submit" value="Cari" id="cari">
+    </form>
+
+    <ul id="result"></ul>
+
+    <script>
+        const form = document.querySelector('#form');
+        const query = document.querySelector('#query');
+        const result = document.querySelector('#result');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    const jsonData = JSON.parse(xhr.responseText);
+                    
+                    result.innerHTML = '';
+                    jsonData.forEach(function(data) {
+                        result.innerHTML += `
+                            <li>
+                                <a href="${data.detail}" target="_blank">${data.title}</a>
+                            </li>
+                        `;
+                    });
+                }
+            }
+            xhr.open('GET', '/api/search?query=' + query.value, true);
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
