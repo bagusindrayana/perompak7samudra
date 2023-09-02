@@ -111,15 +111,16 @@ class PusatFilm(object):
         )
         r_download_json = r_download.json()
         downloadLinks = []
-        for link in r_download_json["result"]["mirrors"]:
-            downloadLinks.append(
-                {
-                    "link": "https://kotakajaib.me/mirror/"
-                    + link["server"]
-                    + "/"
-                    + file_id,
-                    "title": link["server"],
-                }
-            )
+        if "result" in r_download_json and r_download.status_code == 200:
+            for link in r_download_json["result"]["mirrors"]:
+                downloadLinks.append(
+                    {
+                        "link": "https://kotakajaib.me/mirror/"
+                        + link["server"]
+                        + "/"
+                        + file_id,
+                        "title": link["server"],
+                    }
+                )
         result = {"title": title, "stream": streamLinks, "download": downloadLinks}
         return result
