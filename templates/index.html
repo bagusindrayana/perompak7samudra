@@ -142,6 +142,7 @@
             const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
+                    loading.style.display = 'none';
                     const jsonData = JSON.parse(xhr.responseText);
 
                     result.innerHTML = '';
@@ -159,16 +160,17 @@
                             </li>
                         `;
                     }
-                } else {
+                } else if(xhr.status != 200) {
                     // error message
                     result.innerHTML = `
                         <li>
-                            <h1>Ops, ada masalah saat melakukan pencarian film</h1>
+                            <h1>Ops, ada masalah saat melakukan pencarian film : ${xhr.status}</h1>
                         </li>
                     `;
+                    loading.style.display = 'none';
                     
                 }
-                loading.style.display = 'none';
+                
             }
             xhr.open('GET', '/api/search?query=' + query.value, true);
             xhr.send();
