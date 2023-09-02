@@ -12,7 +12,7 @@ class Provider(object):
         results = []
         for provider in self.providers:
             results += provider.search(query)
-        results = sorted(result, key=lambda k: k["title"])
+        results = sorted(results, key=lambda k: k["title"])
         return results
     
     def get(self, link,providerName):
