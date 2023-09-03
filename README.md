@@ -32,3 +32,9 @@ Nama | Status | Speed
 
 ## Kontribusi
 Silahkan buat pull request jika ingin berkontribusi, atau bisa juga dengan mengirimkan saran website yang ingin di scraping.
+
+## Support
+- silahkan berikan bintang jika kalian suka dengan project ini
+- kalau mau bisa donasi buat beli kuota
+
+<a href="https://trakteer.id/bagood/tip" target="_blank"><img id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png" height="40" style="border:0px;height:40px;" alt="Trakteer Saya"></a>
