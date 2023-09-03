@@ -26,7 +26,7 @@ $ curl -s -H "Accept: application/json" "http://127.0.0.1:5001/api/search?query=
 provider yang tersedia saat ini, **Note : ** jika mencari menggunakan semua provider, maka akan memakan waktu yang cukup lama.
 
 Nama | Status | Speed
---- | ---
+--- | --- | ---
 [PusatFilm](https://51.79.193.133) | ✔️ | Medium
 [Muvi](http://128.199.130.38) | ✔️ | Slow
 
