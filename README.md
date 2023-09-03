@@ -23,10 +23,12 @@ $ curl -s -H "Accept: application/json" "http://127.0.0.1:5001/api/search?query=
 ```
 
 ## Provider
-Nama | Status
+provider yang tersedia saat ini, **Note : ** jika mencari menggunakan semua provider, maka akan memakan waktu yang cukup lama.
+
+Nama | Status | Speed
 --- | ---
-[PusatFilm](https://51.79.193.133) | ✔️
-[Muvi](http://128.199.130.38) | ✔️
+[PusatFilm](https://51.79.193.133) | ✔️ | Medium
+[Muvi](http://128.199.130.38) | ✔️ | Slow
 
 ## Kontribusi
 Silahkan buat pull request jika ingin berkontribusi, atau bisa juga dengan mengirimkan saran website yang ingin di scraping.

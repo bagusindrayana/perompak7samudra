@@ -176,6 +176,15 @@
                 }
                 
             }
+            //on error
+            xhr.onerror = function(){
+                loading.style.display = 'none';
+                result.innerHTML = `
+                            <li>
+                                <h1>Ops, ada masalah dengan server. ${xhr.status}</h1>
+                            </li>
+                        `;
+            }
             let apiUrl = '/api/search?query=' + query.value;
             providers.forEach(function (provider) {
                 if (provider.checked) {
