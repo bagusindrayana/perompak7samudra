@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Film : {{ data['title'] }}</title>
+</head>
+
+<body>
+    <h1>{{ data['title'] }}</h1>
+    <h3>Episodes : </h3>
+    <ul>
+        {% for d in data['episode'] %}
+        <li>
+            <a href="{{ d['detail'] }}" target="_blank">{{ d['title'] }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    
+</body>
+
+</html>

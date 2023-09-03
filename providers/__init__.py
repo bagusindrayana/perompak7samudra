@@ -8,11 +8,19 @@ class Provider(object):
             Muvi.Muvi()
         ]
 
-    def search(self, query):
+    def listProviders(self):
+        return [provider.__class__.__name__ for provider in self.providers]
+
+    def search(self, query, **kwargs):
         results = []
-        for provider in self.providers:
-            results += provider.search(query)
-        results = sorted(results, key=lambda k: k["title"])
+        providers = kwargs.get("providers", None)
+        if providers:
+            for provider in self.providers:
+                if provider.__class__.__name__ in providers:
+                    results += provider.search(query)
+        else:
+            for provider in self.providers:
+                results += provider.search(query)
         return results
     
     def get(self, link,providerName):

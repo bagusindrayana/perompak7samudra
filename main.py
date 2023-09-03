@@ -11,7 +11,8 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    providers = Provider().listProviders()
+    return render_template('index.html',providers=providers)
 
 @app.route('/detail')
 def detail():
@@ -23,15 +24,31 @@ def detail():
     if not link:
         return jsonify({"error": "link not found"})
     result = Provider().get(link,provider)
-    print(result)
     return render_template('detail.html',data=result)
+
+@app.route('/detail-series')
+def detailSeries():
+    _detail = request.args.get("detail")
+    _decode = base64.b64decode(_detail.encode()).decode("utf-8")
+    _json = json.loads(_decode)
+    link = _json["link"]
+    provider = _json["provider"]
+    if not link:
+        return jsonify({"error": "link not found"})
+    result = Provider().get(link,provider)
+    return render_template('detail-series.html',data=result)
+
+@app.route("/api/providers")
+def providers():
+    return jsonify(Provider().listProviders()),200
 
 @app.route("/api/search")
 def search():
     query = request.args.get("query")
+    providers = request.args.getlist("providers[]",None)
     if not query:
         return jsonify({"error": "query not found"})
-    result = Provider().search(query)
+    result = Provider().search(query,providers=providers)
     return jsonify(result),200
 
 @app.route("/api/get")

@@ -21,38 +21,48 @@ class PusatFilm(object):
         }
         result = []
         for url in self.servers:
-            _url = f"{url}/wp-admin/admin-ajax.php?action=muvipro_core_ajax_search_movie&query={query}"
-            r = requests.get(_url, headers=headers, verify=False)
-
+            _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
+            print(_url)
             try:
-                text = r.text.replace("\n", "")
-                jsonData = json.loads(text)
-
-                for data in jsonData["suggestions"]:
+                r = requests.get(_url, headers=headers, verify=False)
+                r.raise_for_status()
+                soup = BeautifulSoup(r.text, "html.parser")
+                # get article tag inside div#gmr-main-load
+                articles = soup.find("div", {"id": "gmr-main-load"}).find_all("article")
+                for article in articles:
+                    title = article.find("h2", {"class": "entry-title"}).text
+                    thumb = article.find("img", {"class": "attachment-xlarge"})['src']
+                    link = article.find("a", {"class": "gmr-watch-button"})["href"]
+                    detailLink = base64.b64encode(
+                                json.dumps(
+                                    {"link": link, "provider": "PusatFilm"}
+                                ).encode()).decode("utf-8")
+                    if "/tv/" in link:
+                        detailLink = "/detail-series?detail=" + detailLink
+                    else:
+                        detailLink = "/detail?detail=" + detailLink
                     result.append(
                         {
                             "link": "/api/get?link="
-                            + data["url"]
+                            + link
                             + "&provider=PusatFilm",
-                            "detail": "/detail?detail="
-                            + base64.b64encode(
-                                json.dumps(
-                                    {"link": data["url"], "provider": "PusatFilm"}
-                                ).encode()
-                            ).decode("utf-8"),
-                            "title": data["value"],
-                            "thumb": data["thumb"],
+                            "detail": detailLink,
+                            "title": title,
+                            "thumb": thumb,
                         }
                     )
-                return result
             except Exception as e:
-                print(f"error on {url} : " + str(e))
+                print(f"error on {_url} : " + str(e))
                 pass
-        # order result by title
-        result = sorted(result, key=lambda k: k["title"])
         return result
 
     def get(self, url):
+        if "/tv/" in url:
+            return self.getSeries(url)
+        else:
+            return self.getMovies(url)
+        
+    def getMovies(self,url):
         headers = {
             "authority": "51.79.193.133",
             "accept": "*/*",
@@ -123,4 +133,36 @@ class PusatFilm(object):
                     }
                 )
         result = {"title": title, "stream": streamLinks, "download": downloadLinks}
+        return result
+    
+    def getSeries(self, url):
+        headers = {
+            "authority": "51.79.193.133",
+            "accept": "*/*",
+            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+            "referer": "https://51.79.193.133/",
+            "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+        }
+        r = requests.get(url, headers=headers, verify=False)
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        # get all link from class button s-eps 
+        links = soup.find_all("a", {"class": "button s-eps"})
+
+        title = soup.find("h1", {"class": "entry-title"}).text
+
+        epsLinks = []
+        for link in links:
+            epsLinks.append({"link": "/api/get?link="+link['href'],"detail": "/detail?detail="+base64.b64encode(
+                                json.dumps(
+                                    {"link": link["href"], "provider": "PusatFilm"}
+                                ).encode()).decode("utf-8"), "title": link.text})
+        
+        result = {"title": title, "episode": epsLinks}
         return result

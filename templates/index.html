@@ -109,13 +109,18 @@
 
 <body>
     <form action="#" id="form">
-        <input type="text" name="query" id="query" placeholder="Cari Judul Film">
-        <input type="submit" value="Cari" id="cari">
+        <div>
+            <input type="text" name="query" id="query" placeholder="Cari Judul Film">
+            <input type="submit" value="Cari" id="cari">
+        </div>
+        <br>
+        <div>
+            {% for p in providers %}
+                <label for=""><input type="checkbox" name="providers[]" checked class="provider" value="{{ p }}"> {{ p }}</label>
+            {% endfor %}
+        </div>
     </form>
 
-    <ul id="result">
-        
-    </ul>
     <div  id="loading">
         <div class="lds-spinner">
             <div></div>
@@ -132,12 +137,17 @@
             <div></div>
         </div>
     </div>
+    <ul id="result">
+        
+    </ul>
+    
    
 
     <script>
         const form = document.querySelector('#form');
         const query = document.querySelector('#query');
         const result = document.querySelector('#result');
+        const providers = document.querySelectorAll('.provider');
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -166,7 +176,13 @@
                 }
                 
             }
-            xhr.open('GET', '/api/search?query=' + query.value, true);
+            let apiUrl = '/api/search?query=' + query.value;
+            providers.forEach(function (provider) {
+                if (provider.checked) {
+                    apiUrl += '&providers[]=' + provider.value;
+                }
+            });
+            xhr.open('GET',apiUrl, true);
             xhr.send();
         });
     </script>

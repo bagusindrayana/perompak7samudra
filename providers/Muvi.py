@@ -9,29 +9,32 @@ class Muvi(object):
         result = []
         for url in self.servers:
             _url = f"{url}?s={query}"
-            r = requests.get(_url, verify=False)
-            soup = BeautifulSoup(r.text, "html.parser")
-            # get all div inside div.movies-list-full
-            parent = soup.find("div", class_="movies-list-full")
-            divs = parent.find_all("div", class_="ml-item")
-            for div in divs:
-                title = div.find("span", class_="mli-info").text
-                link = div.find("a")["href"]
-                thumb = div.find("img")["data-original"]
-                result.append(
-                    {
-                        "link": "/api/get?link=" + link + "&provider=Muvi",
-                        "detail": "/detail?detail="
-                        + base64.b64encode(
-                            json.dumps({"link": link, "provider": "Muvi"}).encode()
-                        ).decode("utf-8"),
-                        "title": title,
-                        "thumb": thumb,
-                    }
-                )
-        result = sorted(result, key=lambda k: k["title"])
+            try:
+                r = requests.get(_url, verify=False)
+                r.raise_for_status()
+                soup = BeautifulSoup(r.text, "html.parser")
+                # get all div inside div.movies-list-full
+                parent = soup.find("div", class_="movies-list-full")
+                divs = parent.find_all("div", class_="ml-item")
+                for div in divs:
+                    title = div.find("span", class_="mli-info").text
+                    link = div.find("a")["href"]
+                    thumb = div.find("img")["data-original"]
+                    result.append(
+                        {
+                            "link": "/api/get?link=" + link + "&provider=Muvi",
+                            "detail": "/detail?detail="
+                            + base64.b64encode(
+                                json.dumps({"link": link, "provider": "Muvi"}).encode()
+                            ).decode("utf-8"),
+                            "title": title,
+                            "thumb": thumb,
+                        }
+                    )
+            except Exception as e:
+                print(f"error on {_url} : " + str(e))
+                pass
         return result
-
     def get(self, url):
         r = requests.get(url, verify=False)
         soup = BeautifulSoup(r.text, "html.parser")
