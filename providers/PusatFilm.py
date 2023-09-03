@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 class PusatFilm(object):
     servers = ["https://51.79.193.133"]
+    sandbox = "allow-scripts allow-same-origin"
 
     def search(self, query):
         headers = {
@@ -90,11 +91,11 @@ class PusatFilm(object):
         streamLinks = []
         for link in links:
             _r = base64.b64encode("https://51.79.193.133/".encode())
-            _url = base64.b64decode(link["data-frame"]).decode("utf-8")
-            if "uplayer" in _url:
-                _url += "&r=" + _r.decode("utf-8")
-            _url = base64.b64encode(_url.encode()).decode("utf-8")
-            streamLinks.append({"link": "/iframe?link=" + _url, "title": link.text})
+            _raw = base64.b64decode(link["data-frame"]).decode("utf-8")
+            if "uplayer" in _raw:
+                _raw += "&r=" + _r.decode("utf-8")
+            _url = base64.b64encode(_raw.encode()).decode("utf-8")
+            streamLinks.append({"link":_raw,"detail": "/iframe?link=" + _url + "&provider=PusatFilm", "title": link.text})
 
         new_url = iframeSrc.replace("embed", "file")
         headers = {

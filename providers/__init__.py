@@ -30,3 +30,9 @@ class Provider(object):
                 results = provider.get(link)
                 break
         return results
+    
+    def findProvider(self,providerName):
+        for provider in self.providers:
+            if provider.__class__.__name__ == providerName:
+                return provider
+        return None

@@ -66,7 +66,9 @@ def get():
 def iframe():
     link = request.args.get("link")
     link = base64.b64decode(link.encode()).decode("utf-8")
-    return render_template('iframe.html',link=link)
+    provider = request.args.get("provider",None)
+    _p = Provider().findProvider(provider)
+    return render_template('iframe.html',link=link,sandbox=_p.sandbox)
 
 if __name__ == '__main__':
     config = {

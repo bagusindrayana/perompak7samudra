@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 class Muvi(object):
     servers = ["http://128.199.130.38"]
+    sandbox = None
 
     def search(self, query):
         result = []
@@ -41,14 +42,14 @@ class Muvi(object):
         # find a.btn-01
         btn1 = soup.find("a", class_="btn-01")
         streamLink = btn1["href"].replace("https://href.li/?","")
-        print(streamLink)
         btn2 = soup.find("a", class_="btn-02")
         downloadLink = btn2["href"].replace("https://href.li/?","")
         # find title in meta with itemprop="name"
         title = soup.find("meta", itemprop="name")["content"]
+        _url = base64.b64encode(streamLink.encode()).decode("utf-8")
         result = {
             "title": title,
-            "stream": [{"link": streamLink, "title": "Stream"}],
+            "stream": [{"link": streamLink,"detail": "/iframe?link=" + _url + "&provider=Muvi", "title": "Stream"}],
             "download": [{"link": downloadLink, "title": "Download"}],
         }
         return result

@@ -13,7 +13,7 @@
     <ul>
         {% for d in data['stream'] %}
         <li>
-            <a href="{{ d['link'] }}">{{ d['title'] }}</a>
+            <a href="{{ d['detail'] }}">{{ d['title'] }}</a>
         </li>
         {% endfor %}
     </ul>
@@ -21,7 +21,7 @@
     <ul>
         {% for d in data['download'] %}
             <li>
-                <a href="{{ d['link'] }}">{{ d['title'] }}</a>
+                <a href="{{ d['detail'] }}">{{ d['title'] }}</a>
             </li>
         {% endfor %}
     </ul>
