@@ -12,6 +12,9 @@ $ python main.py
 ## API
 - [Swagger](https://app.swaggerhub.com/apis-docs/bagusindrayana/perompak7samudra/1.0.0)
 - [Postman](https://documenter.getpostman.com/view/7785980/2s9Y5cug6A)
+
+
+
 Endpoint | Method | Keterangan
 --- | --- | ---
 `api/search?query={judul_film_yang_dicari}&providers[]={optional:jika ingin mencari di provider tertentu (dan agar lebih cepat)}` | GET | Mencari data film berdasarkan judul
