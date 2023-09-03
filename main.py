@@ -57,6 +57,8 @@ def get():
     provider = request.args.get("provider")
     if not link:
         return jsonify({"error": "link not found"})
+    if not provider:
+        return jsonify({"error": "provider not found"})
     result = Provider().get(link,provider)
     return jsonify(result),200
 
