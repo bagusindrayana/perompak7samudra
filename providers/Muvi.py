@@ -28,7 +28,7 @@ class Muvi(object):
                             + base64.b64encode(
                                 json.dumps({"link": link, "provider": "Muvi"}).encode()
                             ).decode("utf-8"),
-                            "title": title,
+                            "title": title.strip().rstrip(),
                             "thumb": thumb,
                         }
                     )
@@ -48,7 +48,7 @@ class Muvi(object):
         title = soup.find("meta", itemprop="name")["content"]
         _url = base64.b64encode(streamLink.encode()).decode("utf-8")
         result = {
-            "title": title,
+            "title": title.strip().rstrip(),
             "stream": [{"link": streamLink,"detail": "/iframe?link=" + _url + "&provider=Muvi", "title": "Stream"}],
             "download": [{"link": downloadLink, "title": "Download"}],
         }

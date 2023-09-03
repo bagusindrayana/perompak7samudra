@@ -45,7 +45,7 @@ class PusatFilm(object):
                         {
                             "link": "/api/get?link=" + link + "&provider=PusatFilm",
                             "detail": detailLink,
-                            "title": title,
+                            "title": title.strip().rstrip(),
                             "thumb": thumb,
                         }
                     )
@@ -127,7 +127,7 @@ class PusatFilm(object):
                         + link["server"]
                         + "/"
                         + file_id,
-                        "title": link["server"],
+                        "title": link["server"].strip().rstrip(),
                     }
                 )
         result = {"title": title, "stream": streamLinks, "download": downloadLinks}
@@ -153,7 +153,7 @@ class PusatFilm(object):
         # get all link from class button s-eps
         links = soup.find_all("a", {"class": "button s-eps"})
 
-        title = soup.find("h1", {"class": "entry-title"}).text
+        title = soup.find("h1", {"class": "entry-title"}).text.strip().rstrip()
 
         epsLinks = []
         for link in links:
