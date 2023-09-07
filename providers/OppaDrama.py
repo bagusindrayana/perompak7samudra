@@ -28,7 +28,7 @@ class OppaDrama(object):
                     result.append(
                         {
                             "link": "/api/get?link=" + link + "&provider=OppaDrama",
-                            "detail": "/detail?detail="
+                            "detail": "/detail-series?detail="
                             + base64.b64encode(
                                 json.dumps({"link": link, "provider": "OppaDrama"}).encode()
                             ).decode("utf-8"),
