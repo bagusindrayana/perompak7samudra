@@ -46,9 +46,10 @@ def providers():
 def search():
     query = request.args.get("query")
     providers = request.args.getlist("providers[]",None)
+    page = request.args.get("page",1)
     if not query:
         return jsonify({"error": "query not found"})
-    result = Provider().search(query,providers=providers)
+    result = Provider().search(query=query,providers=providers,page=page)
     return jsonify(result),200
 
 @app.route("/api/get")

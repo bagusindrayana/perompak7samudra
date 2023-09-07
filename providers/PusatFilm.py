@@ -6,7 +6,7 @@ class PusatFilm(object):
     servers = ["https://51.79.193.133"]
     sandbox = "allow-scripts allow-same-origin"
 
-    def search(self, query):
+    def search(self, query,page=1):
         headers = {
             "authority": "51.79.193.133",
             "accept": "*/*",
@@ -22,8 +22,11 @@ class PusatFilm(object):
         }
         result = []
         for url in self.servers:
-            _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
-            print(_url)
+            if int(page) > 1:
+                _url = f"{url}/page/{page}?s={query}&post_type[]=post&post_type[]=tv"
+            else:
+                _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
+            
             try:
                 r = requests.get(_url, headers=headers, verify=False)
                 r.raise_for_status()

@@ -15,11 +15,10 @@ $ python main.py
 
 
 
-Endpoint | Method | Keterangan
---- | --- | ---
-`api/search?query={judul_film_yang_dicari}&providers[]={optional:jika ingin mencari di provider tertentu (dan agar lebih cepat)}` | GET | Mencari data film berdasarkan judul
-`api/get?link={link_film}&provider={provider_film/website_bajakannya}` | GET | Menampilkan title, link stream dan link download
---- | --- | ---
+Endpoint | Method | Parameter | Keterangan
+--- | --- | --- | ---
+`api/search?query={judul_film_yang_dicari}&providers[]={optional:jika ingin mencari di provider tertentu (dan agar lebih cepat)}` | GET | `query`,`providers[]`,`page` | Mencari data film berdasarkan judul
+`api/get?link={link_film}&provider={provider_film/website_bajakannya}` | GET | `link`,`provider` | Menampilkan title, link stream dan link download
 
 
 ## Contoh

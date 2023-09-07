@@ -6,10 +6,14 @@ class Muvi(object):
     servers = ["http://128.199.130.38"]
     sandbox = None
 
-    def search(self, query):
+    def search(self, query,page=1):
         result = []
         for url in self.servers:
-            _url = f"{url}?s={query}"
+            if int(page) > 1:
+                _url = f"{url}/page/{page}?s={query}"
+            else:
+                _url = f"{url}?s={query}"
+            
             try:
                 r = requests.get(_url, verify=False)
                 r.raise_for_status()
