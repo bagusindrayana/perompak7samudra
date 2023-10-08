@@ -3,15 +3,15 @@ from bs4 import BeautifulSoup
 
 
 class PusatFilm(object):
-    servers = ["https://51.79.193.133"]
+    servers = ["https://tv.pusatfilm21.wiki"]
     sandbox = "allow-scripts allow-same-origin"
 
-    def search(self, query,page=1):
+    def search(self, query,page=1,server=0):
         headers = {
             "authority": "51.79.193.133",
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": "https://51.79.193.133/",
+            "referer": "https://tv.pusatfilm21.wiki/",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -21,40 +21,39 @@ class PusatFilm(object):
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
         }
         result = []
-        for url in self.servers:
-            if int(page) > 1:
-                _url = f"{url}/page/{page}?s={query}&post_type[]=post&post_type[]=tv"
-            else:
-                _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
-            
-            try:
-                r = requests.get(_url, headers=headers, verify=False)
-                r.raise_for_status()
-                soup = BeautifulSoup(r.text, "html.parser")
-                # get article tag inside div#gmr-main-load
-                articles = soup.find("div", {"id": "gmr-main-load"}).find_all("article")
-                for article in articles:
-                    title = article.find("h2", {"class": "entry-title"}).text
-                    thumb = article.find("img", {"class": "attachment-xlarge"})["src"]
-                    link = article.find("a", {"class": "gmr-watch-button"})["href"]
-                    detailLink = base64.b64encode(
-                        json.dumps({"link": link, "provider": "PusatFilm"}).encode()
-                    ).decode("utf-8")
-                    if "/tv/" in link:
-                        detailLink = "/detail-series?detail=" + detailLink
-                    else:
-                        detailLink = "/detail?detail=" + detailLink
-                    result.append(
-                        {
-                            "link": "/api/get?link=" + link + "&provider=PusatFilm",
-                            "detail": detailLink,
-                            "title": title.strip().rstrip(),
-                            "thumb": thumb,
-                        }
-                    )
-            except Exception as e:
-                print(f"error on {_url} : " + str(e))
-                pass
+        url = self.servers[server]
+        if int(page) > 1:
+            _url = f"{url}/page/{page}?s={query}&post_type[]=post&post_type[]=tv"
+        else:
+            _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
+        
+        try:
+            r = requests.get(_url, headers=headers, verify=False)
+            r.raise_for_status()
+            soup = BeautifulSoup(r.text, "html.parser")
+            # get article tag inside div#gmr-main-load
+            articles = soup.find("div", {"id": "gmr-main-load"}).find_all("article")
+            for article in articles:
+                title = article.find("h2", {"class": "entry-title"}).text
+                thumb = article.find("img", {"class": "attachment-xlarge"})["src"]
+                link = article.find("a", {"class": "gmr-watch-button"})["href"]
+                detailLink = base64.b64encode(
+                    json.dumps({"link": link, "provider": "PusatFilm"}).encode()
+                ).decode("utf-8")
+                if "/tv/" in link:
+                    detailLink = "/detail-series?detail=" + detailLink
+                else:
+                    detailLink = "/detail?detail=" + detailLink
+                result.append(
+                    {
+                        "link": "/api/get?link=" + link + "&provider=PusatFilm",
+                        "detail": detailLink,
+                        "title": title.strip().rstrip(),
+                        "thumb": thumb,
+                    }
+                )
+        except Exception as e:
+            print(f"error on {_url} : " + str(e))
         return result
 
     def get(self, url):
