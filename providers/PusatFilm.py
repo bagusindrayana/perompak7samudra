@@ -3,15 +3,38 @@ from bs4 import BeautifulSoup
 
 
 class PusatFilm(object):
-    servers = ["https://tv.pusatfilm21.wiki"]
+    servers = []
     sandbox = "allow-scripts allow-same-origin"
 
+    def checkLink(self):
+        print("Check")
+        _live = "https://pusatfilm21.info"
+        r = requests.get(_live,headers={
+            "authority":"pusatfilm21.info",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+        })
+        print(f"Finish Check {r.status_code}")
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        links = soup.find_all("a", {"class": "card-link"})
+        for link in links:
+            self.servers.append(link["href"])
+
     def search(self, query,page=1,server=0):
+        self.checkLink()
+        url = self.servers[server]
         headers = {
-            "authority": "51.79.193.133",
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": "https://tv.pusatfilm21.wiki/",
+            "referer": f"{url}/",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -20,8 +43,13 @@ class PusatFilm(object):
             "sec-fetch-site": "same-origin",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
         }
+        first_request = requests.get(url,headers=headers, verify=False)
+        first_request.raise_for_status()
+        url = first_request.url
+        print(url)
+       
         result = []
-        url = self.servers[server]
+        
         if int(page) > 1:
             _url = f"{url}/page/{page}?s={query}&post_type[]=post&post_type[]=tv"
         else:
