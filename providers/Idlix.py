@@ -2,39 +2,16 @@ import requests, json, base64
 from bs4 import BeautifulSoup
 
 
-class PusatFilm(object):
-    servers = []
+class Idlix(object):
+    servers = ["https://tv.idlixplus.net"]
     sandbox = "allow-scripts allow-same-origin"
 
-    def checkLink(self):
-        print("Check")
-        _live = "https://pusatfilm21.info"
-        r = requests.get(_live,headers={
-            "authority":"pusatfilm21.info",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
-        })
-        print(f"Finish Check {r.status_code}")
-        r.raise_for_status()
-        soup = BeautifulSoup(r.text, "html.parser")
-        links = soup.find_all("a", {"class": "card-link"})
-        for link in links:
-            self.servers.append(link["href"])
-
     def search(self, query,page=1,server=0):
-        self.checkLink()
-        url = self.servers[server]
         headers = {
+            "authority": "51.79.193.133",
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": f"{url}/",
+            "referer": "https://tv.idlixplus.net/",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -43,32 +20,24 @@ class PusatFilm(object):
             "sec-fetch-site": "same-origin",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
         }
-        first_request = requests.get(url,headers=headers, verify=False)
-        first_request.raise_for_status()
-        url = first_request.url
-        print(url)
-       
         result = []
-        
-        if int(page) > 1:
-            _url = f"{url}/page/{page}?s={query}&post_type[]=post&post_type[]=tv"
-        else:
-            _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
+        url = self.servers[server]
+        _url = f"{url}/search/{query}/page/{page}"
         
         try:
             r = requests.get(_url, headers=headers, verify=False)
             r.raise_for_status()
             soup = BeautifulSoup(r.text, "html.parser")
             # get article tag inside div#gmr-main-load
-            articles = soup.find("div", {"id": "gmr-main-load"}).find_all("article")
+            articles = soup.find("div", {"class": "search-page"}).find_all("article")
             for article in articles:
-                title = article.find("h2", {"class": "entry-title"}).text
-                thumb = article.find("img", {"class": "attachment-xlarge"})["src"]
-                link = article.find("a", {"class": "gmr-watch-button"})["href"]
+                title = article.find("div", {"class": "title"}).text
+                thumb = article.find("img", {})["src"]
+                link = article.find("a", {})["href"]
                 detailLink = base64.b64encode(
                     json.dumps({"link": link, "provider": "PusatFilm"}).encode()
                 ).decode("utf-8")
-                if "/tv/" in link:
+                if "/season/" in link:
                     detailLink = "/detail-series?detail=" + detailLink
                 else:
                     detailLink = "/detail?detail=" + detailLink

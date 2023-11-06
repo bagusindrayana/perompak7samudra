@@ -4,3 +4,4 @@ Jinja2>=3.0
 flask_cors
 requests
 beautifulsoup4
+Werkzeug==2.2.2

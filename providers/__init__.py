@@ -1,7 +1,7 @@
 from . import PusatFilm
 from . import Muvi
 from . import OppaDrama
-from . import JuraganFilm
+from . import Idlix
 
 class Provider(object):
     def __init__(self, **kwargs):
@@ -9,7 +9,7 @@ class Provider(object):
             PusatFilm.PusatFilm(),
             Muvi.Muvi(),
             OppaDrama.OppaDrama(),
-            JuraganFilm.JuraganFilm()
+            # Idlix.Idlix(),
         ]
 
     def listProviders(self):

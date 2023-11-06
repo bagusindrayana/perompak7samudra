@@ -6,39 +6,38 @@ class OppaDrama(object):
     servers = ["http://185.217.95.34"]
     sandbox = "allow-scripts allow-same-origin"
 
-    def search(self, query,page=1):
+    def search(self, query,page=1,server=0):
         result = []
-        for url in self.servers:
-            if int(page) > 1:
-                _url = f"{url}/page/{page}?s={query}"
-            else:
-                _url = f"{url}?s={query}"
-            try:
-                r = requests.get(_url, verify=False)
-                r.raise_for_status()
-                soup = BeautifulSoup(r.text, "html.parser")
-                # get all article inside div.listupd
-                parent = soup.find("div", class_="listupd")
-                
-                articles = parent.find_all("article", class_="bs")
-                for article in articles:
-                    title = article.find("h2").text.strip().rstrip()
-                    link = article.find("a")["href"]
-                    thumb = article.find("img")["src"]
-                    result.append(
-                        {
-                            "link": "/api/get?link=" + link + "&provider=OppaDrama",
-                            "detail": "/detail-series?detail="
-                            + base64.b64encode(
-                                json.dumps({"link": link, "provider": "OppaDrama"}).encode()
-                            ).decode("utf-8"),
-                            "title": title.strip().rstrip(),
-                            "thumb": thumb,
-                        }
-                    )
-            except Exception as e:
-                print(f"error on {_url} : " + str(e))
-                pass
+        url = self.servers[server]
+        if int(page) > 1:
+            _url = f"{url}/page/{page}?s={query}"
+        else:
+            _url = f"{url}?s={query}"
+        try:
+            r = requests.get(_url, verify=False)
+            r.raise_for_status()
+            soup = BeautifulSoup(r.text, "html.parser")
+            # get all article inside div.listupd
+            parent = soup.find("div", class_="listupd")
+            
+            articles = parent.find_all("article", class_="bs")
+            for article in articles:
+                title = article.find("h2").text.strip().rstrip()
+                link = article.find("a")["href"]
+                thumb = article.find("img")["src"]
+                result.append(
+                    {
+                        "link": "/api/get?link=" + link + "&provider=OppaDrama",
+                        "detail": "/detail-series?detail="
+                        + base64.b64encode(
+                            json.dumps({"link": link, "provider": "OppaDrama"}).encode()
+                        ).decode("utf-8"),
+                        "title": title.strip().rstrip(),
+                        "thumb": thumb,
+                    }
+                )
+        except Exception as e:
+            print(f"error on {_url} : " + str(e))
         return result
     def get(self, url):
         r = requests.get(url, verify=False)

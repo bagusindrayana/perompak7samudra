@@ -32,7 +32,7 @@ provider yang tersedia saat ini, **Note : ** jika mencari menggunakan semua prov
 
 Nama | Status | Speed | Rekomendasi Stream
 --- | --- | --- | ---
-[PusatFilm](https://51.79.193.133) | ✔️ | Medium | GDP
+[PusatFilm](https://51.79.193.133) | ✔️ | Medium | Private/GDP
 [Muvi](http://128.199.130.38) | ✔️ | Slow | -
 [OppaDrama](http://185.217.95.34) | ✔️ | Medium | FileLions
 

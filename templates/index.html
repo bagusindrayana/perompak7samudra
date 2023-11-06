@@ -114,6 +114,8 @@
             <input type="submit" value="Cari" id="cari">
         </div>
         <br>
+        <p>Note : jangan centang semua provider jika error timeout (504)</p>
+        <br>
         <div>
             {% for p in providers %}
                 <label for=""><input type="checkbox" name="providers[]" checked class="provider" value="{{ p }}"> {{ p }}</label>
