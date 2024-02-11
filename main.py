@@ -38,6 +38,15 @@ def detailSeries():
     result = Provider().get(link,provider)
     return render_template('detail-series.html',data=result)
 
+
+@app.route('/iframe')
+def iframe():
+    link = request.args.get("link")
+    link = base64.b64decode(link.encode()).decode("utf-8")
+    provider = request.args.get("provider",None)
+    _p = Provider().findProvider(provider)
+    return render_template('iframe.html',link=link,sandbox=_p.sandbox)
+
 @app.route("/api/providers")
 def providers():
     return jsonify(Provider().listProviders()),200
@@ -63,13 +72,39 @@ def get():
     result = Provider().get(link,provider)
     return jsonify(result),200
 
-@app.route('/iframe')
-def iframe():
+@app.route('/api/detail')
+def api_detail():
+    _detail = request.args.get("detail")
+    _decode = base64.b64decode(_detail.encode()).decode("utf-8")
+    _json = json.loads(_decode)
+    link = _json["link"]
+    provider = _json["provider"]
+    if not link:
+        return jsonify({"error": "link not found"})
+    result = Provider().get(link,provider)
+    return render_template('detail.html',data=result)
+
+@app.route('/api/detail-series')
+def api_detailSeries():
+    _detail = request.args.get("detail")
+    _decode = base64.b64decode(_detail.encode()).decode("utf-8")
+    _json = json.loads(_decode)
+    link = _json["link"]
+    provider = _json["provider"]
+    if not link:
+        return jsonify({"error": "link not found"})
+    result = Provider().get(link,provider)
+    return render_template('detail-series.html',data=result)
+
+
+@app.route('/api/iframe')
+def api_iframe():
     link = request.args.get("link")
     link = base64.b64decode(link.encode()).decode("utf-8")
     provider = request.args.get("provider",None)
     _p = Provider().findProvider(provider)
     return render_template('iframe.html',link=link,sandbox=_p.sandbox)
+
 
 if __name__ == '__main__':
     config = {
