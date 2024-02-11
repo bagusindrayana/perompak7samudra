@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 
 class OppaDrama(object):
-    servers = ["http://185.217.95.34"]
+    servers = ["http://oppadrama.biz"]
     sandbox = "allow-scripts allow-same-origin"
 
     def search(self, query,page=1,server=0):
