@@ -76,13 +76,15 @@ class OppaDrama(object):
                     _raw = base64.b64decode(link).decode("utf-8")
                     # get value inside src in _raw string
                     _soup = BeautifulSoup("<p>"+_raw+"</p>", "html.parser")
-                    _raw = _soup.find("p").find("iframe")["src"]
-                    _url = base64.b64encode(_raw.encode()).decode("utf-8")
-                    streamLinks.append({
-                        "link": _raw,
-                        "detail": "/iframe?link=" + _url + "&provider=OppaDrama", 
-                        "title": mirror.text.strip().rstrip()
-                    })
+                    _iframe = _soup.find("p").find("iframe")
+                    if _iframe != None:
+                        _raw = _iframe["src"]
+                        _url = base64.b64encode(_raw.encode()).decode("utf-8")
+                        streamLinks.append({
+                            "link": _raw,
+                            "detail": "/iframe?link=" + _url + "&provider=OppaDrama", 
+                            "title": mirror.text.strip().rstrip()
+                        })
             
             downloadLinks = []
             dlbox = soup.find("div", class_="dlbox")
