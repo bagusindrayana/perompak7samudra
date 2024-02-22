@@ -114,12 +114,11 @@ class Idlix(object):
             resAjax = self._ajaxAdmin("doo_player_ajax",post,nume,type)
             value_str = json.dumps(resAjax)
             urlData = urllib.parse.urlencode({"data":value_str})
-            print(urlData)
             _raw = self._requestDecrypt(urlData)
             _url = base64.b64encode(_raw.encode()).decode("utf-8")
             streamLinks.append({
                 "link": _raw,
-                "detail": "/iframe?link=" + _url + "&provider=OppaDrama", 
+                "detail": _raw, 
                 "title": link.text.strip().rstrip()
             })
 
@@ -230,12 +229,41 @@ class Idlix(object):
     
     def _requestDecrypt(self,dataUrl):
         BASE_URL = os.environ.get('BASE_URL')
+        return BASE_URL+"/idlix?"+dataUrl
         res = requests.request("GET", BASE_URL+"/idlix?"+dataUrl)
         print(res.text)
         # find #result
         soup = BeautifulSoup(res.text, "html.parser")
         result = soup.find("div", {"id": "result"}).text
         return result
+    
+    def convertLink(self,link):
+        self.checkLink()
+        last = link.split("/")[-1]
+        url = "https://jeniusplay.com/player/index.php?data="+last+"&do=getVideo"
+
+        payload = "hash=ba3c5e7b68dbdb900c4ee701df6cd6b5&r="+self.servers[0]
+        headers = {
+            'authority': 'jeniusplay.com',
+            'accept': '*/*',
+            'accept-language': 'en-GB,en;q=0.9,en-US;q=0.8,id;q=0.7',
+            'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'origin': 'https://jeniusplay.com',
+            'sec-ch-ua': '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0',
+            'x-requested-with': 'XMLHttpRequest',
+            'Cookie': 'fireplayer_player=r54vhpe1m2p3h5lsfvk1ked4uo'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        proxy_url = os.environ.get('M3U8_PROXY')
+        streamLink = proxy_url+"?url="+response.json()['videoSource']+'&headers={"referer":"https://jeniusplay.com/","x-requested-with":"XMLHttpRequest"}'
+        return streamLink
 
   
 # eval_res, tempfile = js2py.run_file("./js/crypto.js") 

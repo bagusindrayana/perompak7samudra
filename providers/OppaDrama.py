@@ -107,3 +107,5 @@ class OppaDrama(object):
 
         
         return result
+    def convertLink(self,link):
+        return link

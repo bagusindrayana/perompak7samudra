@@ -109,6 +109,15 @@ def api_iframe():
 def idlix():
     return render_template('idlix.html')
 
+@app.route('/player')
+def player():
+    link = request.args.get("link")
+    provider = request.args.get("provider",None)
+    _p = Provider().findProvider(provider)
+    res = _p.convertLink(link)
+    print(res)
+    return render_template('player.html',link=res)
+
 
 if __name__ == '__main__':
     config = {

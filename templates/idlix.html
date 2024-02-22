@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div id="result"></div>
+    <a href="" id="result"></a>
     <script src="/static/decrypt-js/cryptojs-aes.min.js"></script>
     <script src="/static/decrypt-js/cryptojs-aes-format.js"></script>
     <script>
@@ -27,8 +27,17 @@
         // console.log(data["embed_url"]);
 
         var r = CryptoJSAesJson["decrypt"](data["embed_url"], data["key"]);
-        console.log(r);
-        document.getElementById("result").innerHTML = r;
+        var ar = document.getElementById("result");
+        ar.innerHTML = r;
+        let link = "/player?link="+r+"&provider=Idlix";
+        
+        //if r contains youtube
+        if(r.includes("youtube")){
+            link = r;
+        }
+
+        ar.href = link;
+        ar.click();
     </script>
 </body>
 

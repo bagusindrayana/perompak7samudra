@@ -177,3 +177,5 @@ class JuraganFilm(object):
 
         result = {"title": title, "episode": epsLinks}
         return result
+    def convertLink(self,link):
+        return link
