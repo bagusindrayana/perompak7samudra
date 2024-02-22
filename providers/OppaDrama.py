@@ -82,7 +82,7 @@ class OppaDrama(object):
                         _url = base64.b64encode(_raw.encode()).decode("utf-8")
                         streamLinks.append({
                             "link": _raw,
-                            "detail": "/iframe?link=" + _url + "&provider=OppaDrama", 
+                            "detail": None, 
                             "title": mirror.text.strip().rstrip()
                         })
             

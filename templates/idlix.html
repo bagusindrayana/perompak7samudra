@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="result"></div>
+    <script src="/static/decrypt-js/cryptojs-aes.min.js"></script>
+    <script src="/static/decrypt-js/cryptojs-aes-format.js"></script>
+    <script>
+    
+        //get json string from query ?embed_url=...
+        var url = new URL(window.location.href);
+        var data = url.searchParams.get("data");
+        console.log(data);
+        data = JSON.parse(data);
+        console.log(data);
+       
+        //string to json
+        // var data = JSON.parse(rawData);
+        
+
+        // console.log(data["embed_url"]);
+
+        var r = CryptoJSAesJson["decrypt"](data["embed_url"], data["key"]);
+        console.log(r);
+        document.getElementById("result").innerHTML = r;
+    </script>
+</body>
+
+</html>

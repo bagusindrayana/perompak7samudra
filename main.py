@@ -6,7 +6,7 @@ from flask_cors import CORS
 from providers import Provider
 
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder="static",template_folder="templates")
 CORS(app)
 
 @app.route('/')
@@ -104,6 +104,10 @@ def api_iframe():
     provider = request.args.get("provider",None)
     _p = Provider().findProvider(provider)
     return render_template('iframe.html',link=link,sandbox=_p.sandbox)
+
+@app.route('/idlix')
+def idlix():
+    return render_template('idlix.html')
 
 
 if __name__ == '__main__':

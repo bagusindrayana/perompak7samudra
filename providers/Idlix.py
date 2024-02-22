@@ -1,17 +1,43 @@
-import requests, json, base64
+import requests
 from bs4 import BeautifulSoup
+
+import base64
+import json
+import os
+import urllib.parse
+
 
 
 class Idlix(object):
-    servers = ["https://tv.idlixplus.net"]
+    servers = []
     sandbox = "allow-scripts allow-same-origin"
 
+    def checkLink(self):
+        print("Check")
+        _live = "https://idlixian.com"
+        r = requests.get(_live,headers={
+            "authority":"pusatfilm21.info",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+            "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+        })
+        print(f"Finish Check {r.status_code}")
+        r.raise_for_status()
+        self.servers.append(r.url)
+
     def search(self, query,page=1,server=0):
+        self.checkLink()
         headers = {
             "authority": "51.79.193.133",
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": "https://tv.idlixplus.net/",
+            "referer": "https://idlixian.com/",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -35,7 +61,7 @@ class Idlix(object):
                 thumb = article.find("img", {})["src"]
                 link = article.find("a", {})["href"]
                 detailLink = base64.b64encode(
-                    json.dumps({"link": link, "provider": "PusatFilm"}).encode()
+                    json.dumps({"link": link, "provider": "Idlix"}).encode()
                 ).decode("utf-8")
                 if "/season/" in link:
                     detailLink = "/detail-series?detail=" + detailLink
@@ -43,7 +69,7 @@ class Idlix(object):
                     detailLink = "/detail?detail=" + detailLink
                 result.append(
                     {
-                        "link": "/api/get?link=" + link + "&provider=PusatFilm",
+                        "link": "/api/get?link=" + link + "&provider=Idlix",
                         "detail": detailLink,
                         "title": title.strip().rstrip(),
                         "thumb": thumb,
@@ -60,11 +86,12 @@ class Idlix(object):
             return self.getMovies(url)
 
     def getMovies(self, url):
+        referer = url.split("/")[2]
         headers = {
             "authority": "51.79.193.133",
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": "https://51.79.193.133/",
+            "referer": "https://"+referer+"/",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -75,60 +102,63 @@ class Idlix(object):
         }
         r = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(r.text, "html.parser")
-        # get iframe src inside div.gmr-embed-responsive
-        iframeSrc = soup.find("div", {"class": "gmr-embed-responsive"}).find("iframe")[
-            "src"
-        ]
 
-        # get title from h1.entry-title
-        title = soup.find("h1", {"class": "entry-title"}).text
-
-        r_embed = requests.get(iframeSrc, headers=headers, verify=False)
-        soup_embed = BeautifulSoup(r_embed.text, "html.parser")
-        # get all link inside ul#dropdown-server
-        links = soup_embed.find("ul", {"id": "dropdown-server"}).find_all("a")
+        title = soup.find("div",class_="sheader").find("h1").text
+        
+        links = soup.find("ul", {"id": "playeroptionsul"}).find_all("li")
         streamLinks = []
         for link in links:
-            _r = base64.b64encode("https://51.79.193.133/".encode())
-            _raw = base64.b64decode(link["data-frame"]).decode("utf-8")
-            if "uplayer" in _raw:
-                _raw += "&r=" + _r.decode("utf-8")
+            type = link["data-type"]
+            post = link["data-post"]
+            nume = link["data-nume"]
+            resAjax = self._ajaxAdmin("doo_player_ajax",post,nume,type)
+            value_str = json.dumps(resAjax)
+            urlData = urllib.parse.urlencode({"data":value_str})
+            print(urlData)
+            _raw = self._requestDecrypt(urlData)
             _url = base64.b64encode(_raw.encode()).decode("utf-8")
-            streamLinks.append({"link":_raw,"detail": "/iframe?link=" + _url + "&provider=PusatFilm", "title": link.text})
+            streamLinks.append({
+                "link": _raw,
+                "detail": "/iframe?link=" + _url + "&provider=OppaDrama", 
+                "title": link.text.strip().rstrip()
+            })
 
-        new_url = iframeSrc.replace("embed", "file")
-        headers = {
-            "authority": "kotakajaib.me",
-            "accept": "application/json",
-            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": new_url,
-            "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
-            "x-requested-with": "XMLHttpRequest",
-        }
-        new_url = new_url.replace("https://kotakajaib.me/", "")
-        file_id = new_url.split("/")[1]
-        r_download = requests.request(
-            "GET", "https://kotakajaib.me/api/" + new_url + "/download", headers=headers
-        )
-        r_download_json = r_download.json()
+            
+            
+
+        # new_url = iframeSrc.replace("embed", "file")
+        # headers = {
+        #     "authority": "kotakajaib.me",
+        #     "accept": "application/json",
+        #     "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+        #     "referer": new_url,
+        #     "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+        #     "sec-ch-ua-mobile": "?0",
+        #     "sec-ch-ua-platform": '"Windows"',
+        #     "sec-fetch-dest": "empty",
+        #     "sec-fetch-mode": "cors",
+        #     "sec-fetch-site": "same-origin",
+        #     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+        #     "x-requested-with": "XMLHttpRequest",
+        # }
+        # new_url = new_url.replace("https://kotakajaib.me/", "")
+        # file_id = new_url.split("/")[1]
+        # r_download = requests.request(
+        #     "GET", "https://kotakajaib.me/api/" + new_url + "/download", headers=headers
+        # )
+        # r_download_json = r_download.json()
         downloadLinks = []
-        if "result" in r_download_json and r_download.status_code == 200:
-            for link in r_download_json["result"]["mirrors"]:
-                downloadLinks.append(
-                    {
-                        "link": "https://kotakajaib.me/mirror/"
-                        + link["server"]
-                        + "/"
-                        + file_id,
-                        "title": link["server"].strip().rstrip(),
-                    }
-                )
+        # if "result" in r_download_json and r_download.status_code == 200:
+        #     for link in r_download_json["result"]["mirrors"]:
+        #         downloadLinks.append(
+        #             {
+        #                 "link": "https://kotakajaib.me/mirror/"
+        #                 + link["server"]
+        #                 + "/"
+        #                 + file_id,
+        #                 "title": link["server"].strip().rstrip(),
+        #             }
+        #         )
         result = {"title": title, "stream": streamLinks, "download": downloadLinks}
         return result
 
@@ -158,11 +188,11 @@ class Idlix(object):
         for link in links:
             epsLinks.append(
                 {
-                    "link": "/api/get?link=" + link["href"] + "&provider=PusatFilm",
+                    "link": "/api/get?link=" + link["href"] + "&provider=Idlix",
                     "detail": "/detail?detail="
                     + base64.b64encode(
                         json.dumps(
-                            {"link": link["href"], "provider": "PusatFilm"}
+                            {"link": link["href"], "provider": "Idlix"}
                         ).encode()
                     ).decode("utf-8"),
                     "title": link.text,
@@ -171,3 +201,42 @@ class Idlix(object):
 
         result = {"title": title, "episode": epsLinks}
         return result
+
+    def _ajaxAdmin(self,action,post,nume,type):
+        if len(self.servers) <= 0:
+            self.checkLink()
+        url = self.servers[0]+"/wp-admin/admin-ajax.php"
+
+        payload = "action="+action+"&post="+post+"&nume="+nume+"&type="+type
+        headers = {
+            'authority': 'tv.idlixofficial.co',
+            'accept': '*/*',
+            'accept-language': 'en-GB,en;q=0.9,en-US;q=0.8,id;q=0.7',
+            'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'origin': self.servers[0],
+            'sec-ch-ua': '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0',
+            'x-requested-with': 'XMLHttpRequest',
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        print(f"STATUS : {response.status_code}")
+        return response.json()
+    
+    def _requestDecrypt(self,dataUrl):
+        BASE_URL = os.environ.get('BASE_URL')
+        res = requests.request("GET", BASE_URL+"/idlix?"+dataUrl)
+        print(res.text)
+        # find #result
+        soup = BeautifulSoup(res.text, "html.parser")
+        result = soup.find("div", {"id": "result"}).text
+        return result
+
+  
+# eval_res, tempfile = js2py.run_file("./js/crypto.js") 
+# tempfile.wish("GeeksforGeeks")
