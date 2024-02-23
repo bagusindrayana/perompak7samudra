@@ -23,6 +23,7 @@ def detail():
     provider = _json["provider"]
     if not link:
         return jsonify({"error": "link not found"})
+    print("LINK : "+link)
     result = Provider().get(link,provider)
     return render_template('detail.html',data=result)
 
@@ -35,6 +36,7 @@ def detailSeries():
     provider = _json["provider"]
     if not link:
         return jsonify({"error": "link not found"})
+    print("LINK : "+link)
     result = Provider().get(link,provider)
     return render_template('detail-series.html',data=result)
 

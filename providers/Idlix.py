@@ -63,10 +63,10 @@ class Idlix(object):
                 detailLink = base64.b64encode(
                     json.dumps({"link": link, "provider": "Idlix"}).encode()
                 ).decode("utf-8")
-                if "/season/" in link:
-                    detailLink = "/detail-series?detail=" + detailLink
-                else:
+                if "/movie/" in link:
                     detailLink = "/detail?detail=" + detailLink
+                else:
+                    detailLink = "/detail-series?detail=" + detailLink
                 result.append(
                     {
                         "link": "/api/get?link=" + link + "&provider=Idlix",
@@ -80,15 +80,15 @@ class Idlix(object):
         return result
 
     def get(self, url):
-        if "/tv/" in url:
-            return self.getSeries(url)
-        else:
+        if "/movie/" in url or "/episode/" in url:
             return self.getMovies(url)
+        else:
+            return self.getSeries(url)
 
     def getMovies(self, url):
         referer = url.split("/")[2]
         headers = {
-            "authority": "51.79.193.133",
+            "authority": referer,
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
             "referer": "https://"+referer+"/",
@@ -103,7 +103,11 @@ class Idlix(object):
         r = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(r.text, "html.parser")
 
-        title = soup.find("div",class_="sheader").find("h1").text
+        if "/episode/" in url:
+            title = soup.find("div",{"id": "info"}).find("h1").text
+        else:
+            title = soup.find("div",class_="sheader").find("h1").text
+        
         
         links = soup.find("ul", {"id": "playeroptionsul"}).find_all("li")
         streamLinks = []
@@ -162,11 +166,12 @@ class Idlix(object):
         return result
 
     def getSeries(self, url):
+        referer = url.split("/")[2]
         headers = {
-            "authority": "51.79.193.133",
+            "authority": referer,
             "accept": "*/*",
             "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-            "referer": "https://51.79.193.133/",
+            "referer": "https://"+referer+"/",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -179,22 +184,25 @@ class Idlix(object):
         soup = BeautifulSoup(r.text, "html.parser")
 
         # get all link from class button s-eps
-        links = soup.find_all("a", {"class": "button s-eps"})
+        links = soup.find('ul',class_="episodios").find_all("li")
 
-        title = soup.find("h1", {"class": "entry-title"}).text.strip().rstrip()
+        title = soup.find("div",class_="sheader").find("h1").text
 
         epsLinks = []
         for link in links:
+            a = link.find("a")
+            ep_title = a.text
+            ep_number = link.find("div",class_="numerando").text
             epsLinks.append(
                 {
-                    "link": "/api/get?link=" + link["href"] + "&provider=Idlix",
+                    "link": "/api/get?link=" + a["href"] + "&provider=Idlix",
                     "detail": "/detail?detail="
                     + base64.b64encode(
                         json.dumps(
-                            {"link": link["href"], "provider": "Idlix"}
+                            {"link": a["href"], "provider": "Idlix"}
                         ).encode()
                     ).decode("utf-8"),
-                    "title": link.text,
+                    "title": f"{ep_number} - {ep_title}",
                 }
             )
 
