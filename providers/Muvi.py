@@ -56,3 +56,5 @@ class Muvi(object):
             "download": [{"link": downloadLink, "title": "Download"}],
         }
         return result
+    def convertLink(self,link):
+        return link

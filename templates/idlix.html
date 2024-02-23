@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <a href="" id="result"></a>
+    <script src="/static/decrypt-js/cryptojs-aes.min.js"></script>
+    <script src="/static/decrypt-js/cryptojs-aes-format.js"></script>
+    <script>
+    
+        //get json string from query ?embed_url=...
+        var url = new URL(window.location.href);
+        var data = url.searchParams.get("data");
+        console.log(data);
+        data = JSON.parse(data);
+        console.log(data);
+       
+        //string to json
+        // var data = JSON.parse(rawData);
+        
+
+        // console.log(data["embed_url"]);
+
+        var r = CryptoJSAesJson["decrypt"](data["embed_url"], data["key"]);
+        var ar = document.getElementById("result");
+        ar.innerHTML = r;
+        let link = "/player?link="+r+"&provider=Idlix";
+        
+        //if r contains youtube
+        if(r.includes("youtube")){
+            link = r;
+        }
+
+        ar.href = link;
+        ar.click();
+    </script>
+</body>
+
+</html>

@@ -9,7 +9,7 @@ class Provider(object):
             PusatFilm.PusatFilm(),
             Muvi.Muvi(),
             OppaDrama.OppaDrama(),
-            # Idlix.Idlix(),
+            Idlix.Idlix(),
         ]
 
     def listProviders(self):
