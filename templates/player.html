@@ -42,9 +42,10 @@
     <script src="https://unpkg.com/plyr@3"></script>
 
     <div class="container">
-       
+        <input type="hidden" id="subtitle" value="{{ sub }}">
         <video controls crossorigin playsinline>
             <source type="application/x-mpegURL" src='{{ link|safe }}'>
+            <track kind="captions" label="Bahasa" src="{{ sub }}" srclang="en" default />
         </video>
     </div>
 
@@ -70,6 +71,7 @@
 
                     // Transform available levels into an array of integers (height values).
                     const availableQualities = hls.levels.map(l => l.height);
+                    
 
                     // Add new qualities to option
                     defaultOptions.quality = {
@@ -79,7 +81,8 @@
                         forced: true,
                         onChange: e => updateQuality(e)
                     };
-
+                    
+                    defaultOptions.captions = { active: true, language: 'auto', update: false };
 
                     // Initialize here
                     const player = new Plyr(video, defaultOptions);

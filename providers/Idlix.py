@@ -5,6 +5,7 @@ import base64
 import json
 import os
 import urllib.parse
+import re
 
 
 
@@ -247,6 +248,42 @@ class Idlix(object):
     
     def convertLink(self,link):
         self.checkLink()
+        
+        url = link
+
+        payload = {}
+        headers = {
+            'authority': 'jeniusplay.com',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'accept-language': 'en-GB,en;q=0.9,en-US;q=0.8,id;q=0.7',
+            'referer': 'https://tv.idlixofficial.co/',
+            'sec-ch-ua': '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'iframe',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'cross-site',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0',
+            # 'Cookie': 'fireplayer_player=i0idjdpao1k4qlm73d88f08g25'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        
+        soup = BeautifulSoup(response.text, "html.parser")
+        # find script index 9
+        script = soup.find_all("script")[9].text
+        
+        # find value from var playerjsSubtitle with regex
+        match = re.search(r'var playerjsSubtitle = "(.*?)"', script)
+        if match:
+            value = match.group(1)
+        else:
+            value = ""
+        if "[Bahasa]" in value:
+            value = value.replace("[Bahasa]","")
+
         last = link.split("/")[-1]
         url = "https://jeniusplay.com/player/index.php?data="+last+"&do=getVideo"
 
@@ -271,7 +308,10 @@ class Idlix(object):
         response = requests.request("POST", url, headers=headers, data=payload)
         proxy_url = os.environ.get('M3U8_PROXY')
         streamLink = proxy_url+"?url="+response.json()['videoSource']+'&headers={"referer":"https://jeniusplay.com/","x-requested-with":"XMLHttpRequest"}'
-        return streamLink
+        return {
+            "stream":streamLink,
+            "subtitle":value
+        }
 
   
 # eval_res, tempfile = js2py.run_file("./js/crypto.js") 

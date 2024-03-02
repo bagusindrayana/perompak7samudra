@@ -117,8 +117,8 @@ def player():
     provider = request.args.get("provider",None)
     _p = Provider().findProvider(provider)
     res = _p.convertLink(link)
-    print(res)
-    return render_template('player.html',link=res)
+    
+    return render_template('player.html',link=res['stream'],sub=res['subtitle'])
 
 
 if __name__ == '__main__':
