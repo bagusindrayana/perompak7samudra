@@ -281,8 +281,9 @@ class Idlix(object):
             value = match.group(1)
         else:
             value = ""
-        if "[Bahasa]" in value:
-            value = value.replace("[Bahasa]","")
+        if "]" in value:
+            # split value with ] and get last index
+            value = value.split("]")[1]
 
         last = link.split("/")[-1]
         url = "https://jeniusplay.com/player/index.php?data="+last+"&do=getVideo"
