@@ -88,15 +88,16 @@ class OppaDrama(object):
             
             downloadLinks = []
             dlbox = soup.find("div", class_="dlbox")
-            lis = dlbox.find_all("li")
-            for li in lis:
-                d_title = li.find("span", class_="q")
-                d_link = li.find("a")
-                if d_link != None:
-                    downloadLinks.append({
-                        "link": d_link["href"],
-                        "title": d_title.text
-                    })
+            if dlbox != None:
+                lis = dlbox.find_all("li")
+                for li in lis:
+                    d_title = li.find("span", class_="q")
+                    d_link = li.find("a")
+                    if d_link != None:
+                        downloadLinks.append({
+                            "link": d_link["href"],
+                            "title": d_title.text
+                        })
                     
 
             result = {
