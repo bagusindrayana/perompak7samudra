@@ -150,7 +150,28 @@ class OppaDrama(object):
             url = urllib.parse.quote(link)
             streamLink = proxy_url+"?url="+url+"&headers="+json.dumps(headers)
         else:
-            streamLink = link
+            proxy_url = os.environ.get('M3U8_PROXY')
+            url = link
+            url = urllib.parse.quote(link)
+            streamHost = link.split("/")[2]
+            headers = {
+                'Origin': f'https://{host}',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Referer': f'https://{host}/',
+                'sec-fetch-site': 'cross-site',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'sec-gpc': '1',
+                'Host': streamHost,
+                'Keep-Alive': 'keep-alive',
+                'accept': '*/*',
+                'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-ch-ua-mobile': '?0',
+                'Accept-Language': 'en-US,en'
+            }
+            streamLink = proxy_url+"?url="+url+"&headers="+json.dumps(headers)
         return {
             "stream":streamLink,
             "subtitle":""
