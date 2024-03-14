@@ -246,7 +246,7 @@ class Idlix(object):
         result = soup.find("div", {"id": "result"}).text
         return result
     
-    def convertLink(self,link):
+    def convertLink(self,link,host):
         self.checkLink()
         
         url = link

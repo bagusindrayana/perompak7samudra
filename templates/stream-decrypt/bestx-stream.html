@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="none">
+  <title>DSI.The.Regime.Ep.02.mp4 - Bestx.Stream</title>
+  <script src="https://bestx.stream/assets/js/jquery-3.6.0.min.js"></script>
+  <script src="https://bestx.stream/assets/js/cryptojs-aes-format.js"></script>
+  <script src="https://bestx.stream/assets/js/crypto-js_4.2.0.min.js"></script>
+  <script src="https://bestx.stream/assets/js/sweetalert2_11.7.20.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://bestx.stream/assets/css/sweetalert2_theme-dark.min.css">
+  <link rel="stylesheet" type="text/css" href="https://bestx.stream/templates/jwplayer/assets/css/playerx_v5.css">
+  <script
+    src="//cdn.jsdelivr.net/npm/@peertube/p2p-media-loader-core@latest/build/p2p-media-loader-core.min.js"></script>
+  <script
+    src="//cdn.jsdelivr.net/npm/@peertube/p2p-media-loader-hlsjs@latest/build/p2p-media-loader-hlsjs.min.js"></script>
+  <script src="https://bestx.stream/templates/jwplayer/assets/js/provider.hlsjs_v1.9.js"></script>
+  <script src="//ssl.p.jwpcdn.com/player/v/8.32.0/jwplayer.js"></script>
+
+  <style>
+    /* #video_player {
+      display: none !important;
+      opacity: 0 !important;
+    } */
+  </style>
+</head>
+
+<body>
+  <div id="video_player" style="display: none !important;"></div>
+  <script type="text/javascript">
+    JScripts = '{{link|safe}}';
+  </script>
+
+  <script>
+    (function (_0x7d7b6e, _0x5741ff) {
+      var _0x5cf05e = _0x3e4c, _0x14b38b = _0x7d7b6e();
+      while (true) {
+        try {
+          var _0x4ed5fb = parseInt(_0x5cf05e(409)) / 1 * (-parseInt(_0x5cf05e(403)) / 2) + parseInt(_0x5cf05e(398)) / 3 * (parseInt(_0x5cf05e(400)) / 4) + -parseInt(_0x5cf05e(404)) / 5 + -parseInt(_0x5cf05e(399)) / 6 + parseInt(_0x5cf05e(406)) / 7 + parseInt(_0x5cf05e(397)) / 8 * (parseInt(_0x5cf05e(405)) / 9) + parseInt(_0x5cf05e(402)) / 10;
+          console.log(_0x4ed5fb);
+          if (_0x4ed5fb === _0x5741ff) break; else _0x14b38b.push(_0x14b38b.shift());
+        } catch (_0x1df49f) {
+          _0x14b38b.push(_0x14b38b.shift());
+        }
+      }
+    }(_0x2072, 694121), function () {
+      var _0x8dd11 = _0x3e4c, _0x14518e = {
+        wgHUX: function (_0x4fbbd1, _0x1bb382) {
+          return _0x4fbbd1(_0x1bb382);
+        }, aFAZz: _0x8dd11(407) + _0x8dd11(396)
+      };
+      return _0x14518e[_0x8dd11(401)](eval, CryptoJSAesJson[_0x8dd11(395)](JScripts, _0x14518e[_0x8dd11(408)]));
+    }());
+
+    function _0x3e4c(_0x2cfd29, _0x35b496) {
+      var _0x46485f = _0x2072();
+      return _0x3e4c = function (_0x93a308, _0x40ac3c) {
+        _0x93a308 = _0x93a308 - 395;
+        var _0xbe9f57 = _0x46485f[_0x93a308];
+        return _0xbe9f57;
+      }, _0x3e4c(_0x2cfd29, _0x35b496);
+    }
+    function _0x2072() {
+      var _0x213c84 = ["9653882FdoZsy", "a7igbpIApa", "aFAZz", "60901ihQSZs", "decrypt", "jDyNe", "2696oNbsxC", "465945ooKrrH", "4803390uaxwXh", "20DeAPIb", "wgHUX", "7599700dEdyXW", "8XwtOnu", "6175040tZvTat", "1539EGqCET"];
+      _0x2072 = function () {
+        return _0x213c84;
+      };
+      return _0x2072();
+    };
+
+  </script>
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-CELP8E43D2"></script>
+    <script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag("js", new Date()); gtag("config", "G-CELP8E43D2");</script> -->
+
+  <script>
+    let customHeader = {
+            
+            "sec-ch-ua" : '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
+            "sec-ch-ua-mobile" : "?0",
+            "sec-ch-ua-platform" : '"Windows"',
+            "Sec-Fetch-Dest" : "iframe",
+            "Sec-Fetch-Mode" : "navigate",
+            "Sec-Fetch-Site" : "cross-site",
+            "Sec-GPC" : "1",
+            "Upgrade-Insecure-Requests" : "1",
+            "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        };
+    var jp = jwplayer("video_player")
+    //get video link
+    if(jp.getPlaylist().length > 0){
+      var base = jp.getPlaylist()[0].sources[0].file;
+      //get host
+      // var host = base.split("/")[2];
+      // customHeader["Referer"] = "https://"+host+"/";
+      // customHeader["Origin"] = host;
+      
+
+      // var streamLink = '{{proxy_url|safe}}?url='+base+'&headers='+JSON.stringify(customHeader);
+      // convert base to url encode
+      const url = btoa(base);
+      // console.log("/player?link="+base+"&provider=OppaDrama&host=bestx.stream.com");
+      window.location = "/player?link="+url+"&provider=OppaDrama&host=bestx.stream.com&useBase64=true";
+    } else {
+      alert("Video not found");
+    }
+    
+
+    // document.getElementById("yg1nYTOofi").remove();
+
+    //get last 2 div and remove
+    var divs = document.querySelectorAll("div");
+    var lastDiv = divs[divs.length - 1];
+    lastDiv.remove();
+    var lastDiv = divs[divs.length - 1];
+    lastDiv.remove();
+
+
+
+  </script>
+
+</body>
+
+</html>

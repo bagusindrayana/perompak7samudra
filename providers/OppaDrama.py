@@ -1,5 +1,6 @@
-import requests, json, base64
+import requests, json, base64, os
 from bs4 import BeautifulSoup
+import urllib.parse
 
 
 class OppaDrama(object):
@@ -79,10 +80,19 @@ class OppaDrama(object):
                     _iframe = _soup.find("p").find("iframe")
                     if _iframe != None:
                         _raw = _iframe["src"]
-                        _url = base64.b64encode(_raw.encode()).decode("utf-8")
+                        # _url = base64.b64encode(_raw.encode()).decode("utf-8")
+                        _detail = None
+                        
+                        if("bestx.stream" in _raw):
+                            BASE_URL = os.environ.get('BASE_URL')
+                            _detail = BASE_URL+"/stream-decrypt/bestx-stream?target="+_raw
+                        elif("vidhidepro" in _raw):
+                            BASE_URL = os.environ.get('BASE_URL')
+                            referer = url.split("/")[2]
+                            _detail = BASE_URL+"/stream-decrypt/vidhidepro?target="+_raw+"&referer="+url.split("/")[0]+"//"+referer+"/"
                         streamLinks.append({
                             "link": _raw,
-                            "detail": None, 
+                            "detail": _detail, 
                             "title": mirror.text.strip().rstrip()
                         })
             
@@ -108,5 +118,40 @@ class OppaDrama(object):
 
         
         return result
-    def convertLink(self,link):
-        return link
+    
+
+    def convertLink(self,link,host):
+        streamLink = None
+        if("bestx.stream" in host):
+            streamHost = link.split("/")[2]
+            # add header referer
+            headers = {
+                'Origin': f'https://{host}',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Referer': f'https://{host}/',
+                'sec-fetch-site': 'cross-site',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'sec-gpc': '1',
+                'Host': streamHost,
+                'Keep-Alive': 'keep-alive',
+                'accept': '*/*',
+                'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-ch-ua-mobile': '?0',
+                'Accept-Language': 'en-US,en'
+            }
+
+
+
+            proxy_url = os.environ.get('M3U8_PROXY')
+            url = link
+            url = urllib.parse.quote(link)
+            streamLink = proxy_url+"?url="+url+"&headers="+json.dumps(headers)
+        else:
+            streamLink = link
+        return {
+            "stream":streamLink,
+            "subtitle":""
+        }

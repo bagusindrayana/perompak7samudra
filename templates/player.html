@@ -45,7 +45,10 @@
         <input type="hidden" id="subtitle" value="{{ sub }}">
         <video controls crossorigin playsinline>
             <source type="application/x-mpegURL" src='{{ link|safe }}'>
+            {% if(sub != "") %}
+
             <track kind="captions" label="Bahasa" src="{{ sub }}" srclang="en" default />
+            {% endif %}
         </video>
     </div>
 

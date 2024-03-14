@@ -4,7 +4,8 @@ from flask import Flask, request, jsonify,render_template
 from flask_cors import CORS
 
 from providers import Provider
-
+from utils import BestxStream
+from utils import Vidhidepro
 
 app = Flask(__name__,static_folder="static",template_folder="templates")
 CORS(app)
@@ -115,11 +116,35 @@ def idlix():
 def player():
     link = request.args.get("link")
     provider = request.args.get("provider",None)
+    useBase64 = request.args.get("useBase64",False)
+    if useBase64:
+        link = base64.b64decode(link.encode()).decode("utf-8")
+    host = request.args.get("host",None)
     _p = Provider().findProvider(provider)
-    res = _p.convertLink(link)
+    res = _p.convertLink(link,host)
     
     return render_template('player.html',link=res['stream'],sub=res['subtitle'])
 
+
+@app.route('/stream-decrypt/bestx-stream')
+def bestxStream():
+    target = request.args.get("target")
+    b = BestxStream.BestxStream()
+    result = b.getSource(target)
+    proxy_url = os.environ.get('M3U8_PROXY')
+    return render_template('stream-decrypt/bestx-stream.html',link=result,proxy_url=proxy_url)
+
+@app.route('/stream-decrypt/vidhidepro')
+def vidhidepro():
+    target = request.args.get("target")
+    b = Vidhidepro.Vidhidepro()
+    referer = request.args.get("referer",None)
+    result = b.getSource(target,referer)
+    print(result)
+    # b = BestxStream.BestxStream()
+    # result = b.getSource(target)
+    # proxy_url = os.environ.get('M3U8_PROXY')
+    return render_template('stream-decrypt/vidhidepro.html',link=result)
 
 if __name__ == '__main__':
     config = {
