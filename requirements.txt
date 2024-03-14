@@ -1,7 +1,7 @@
-Flask==2.2.2
+Flask==2.2.5
 gunicorn>=20.1.0
 Jinja2>=3.0
 flask_cors
 requests
 beautifulsoup4
-Werkzeug==2.2.2
+Werkzeug==2.3.8
