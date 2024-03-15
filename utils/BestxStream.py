@@ -22,7 +22,7 @@ class BestxStream():
             "Host": host,
             "sec-ch-ua" : '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
             "sec-ch-ua-mobile" : "?0",
-            "sec-ch-ua-platform" : '"Windows"',
+            "sec-ch-ua-platform" : '"Linux"',
             "Sec-Fetch-Dest" : "iframe",
             "Sec-Fetch-Mode" : "navigate",
             "Sec-Fetch-Site" : "cross-site",
