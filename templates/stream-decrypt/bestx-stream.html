@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="none">
-  <title>DSI.The.Regime.Ep.02.mp4 - Bestx.Stream</title>
+  <title>Video - Bestx.Stream</title>
   <script src="https://bestx.stream/assets/js/jquery-3.6.0.min.js"></script>
   <script src="https://bestx.stream/assets/js/cryptojs-aes-format.js"></script>
   <script src="https://bestx.stream/assets/js/crypto-js_4.2.0.min.js"></script>
@@ -91,17 +91,10 @@
     //get video link
     if(jp.getPlaylist().length > 0){
       var base = jp.getPlaylist()[0].sources[0].file;
-      //get host
-      // var host = base.split("/")[2];
-      // customHeader["Referer"] = "https://"+host+"/";
-      // customHeader["Origin"] = host;
-      
-
-      // var streamLink = '{{proxy_url|safe}}?url='+base+'&headers='+JSON.stringify(customHeader);
       // convert base to url encode
       const url = btoa(base);
-      // console.log("/player?link="+base+"&provider=OppaDrama&host=bestx.stream.com");
-      window.location = "/player?link="+url+"&provider=OppaDrama&host=bestx.stream.com&useBase64=true";
+      // console.log("/player?link="+base+"&provider=OppaDrama&host=bestx.stream");
+      window.location = "/player?link="+url+"&provider=OppaDrama&host=bestx.stream&useBase64=true";
     } else {
       alert("Video not found");
     }
