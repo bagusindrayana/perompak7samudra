@@ -1,6 +1,6 @@
-<HTML>
+<html>
 
-<HEAD>
+<head>
   <meta charset="utf-8">
   <title>Embed</title>
   <META NAME="description"
@@ -31,47 +31,10 @@
 
     gtag('config', 'G-HJD8YWWX25');
   </script>
-  <!-- Yandex.Metrika counter -->
-  <script type="text/javascript">
-    (function (m, e, t, r, i, k, a) {
-      m[i] = m[i] || function () {
-        (m[i].a = m[i].a || []).push(arguments)
-      };
-      m[i].l = 1 * new Date();
-      for (var j = 0; j < document.scripts.length; j++) {
-        if (document.scripts[j].src === r) {
-          return;
-        }
-      }
-      k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
-    })
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-    ym(93381808, "init", {
-      clickmap: true,
-      trackLinks: true,
-      accurateTrackBounce: true,
-      webvisor: true
-    });
-  </script>
-  <noscript>
-    <div><img src="https://mc.yandex.ru/watch/93381808" style="position:absolute; left:-9999px;" alt="" /></div>
-  </noscript>
-  <!-- /Yandex.Metrika counter -->
-  <script>
-    $.cookie('file_id', '6430507', {
-      expires: 10
-    });
-    $.cookie('aff', '660', {
-      expires: 10
-    });
-    $.cookie('ref_url', '185.217.95.28', {
-      expires: 10
-    });
-  </script>
-</HEAD>
+</head>
 
-<BODY topmargin=0 leftmargin=0 style="background:transparent;">
+<body topmargin=0 leftmargin=0 style="background:transparent;">
 
 
 
@@ -132,8 +95,15 @@
 
 
   </div>
-
+  {% if ".m3u8" in link %}
+  <script>
+    var base = "{{ link|safe }}";
+    const url = btoa(base);
+    window.location = "/player?link=" + url + "&provider=OppaDrama&host=vidhidepro.com&useBase64=true";
+  </script>
+  {% else %}
   <script type='text/javascript'>
+
     eval(function (p, a, c, k, e, d) {
       while (c--)
         if (k[c]) p = p.replace(new RegExp('\\b' + c.toString(a) + '\\b', 'g'), k[c]);
@@ -145,12 +115,12 @@
     if (jp.getPlaylist().length > 0) {
       var base = jp.getPlaylist()[0].sources[0].file;
       const url = btoa(base);
-      window.location = "/player?link="+url+"&provider=OppaDrama&host=vidhidepro.com&useBase64=true";
+      window.location = "/player?link=" + url + "&provider=OppaDrama&host=vidhidepro.com&useBase64=true";
     }
   </script>
+  {% endif %}
 
 
+</body>
 
-</BODY>
-
-</HTML>
+</html>

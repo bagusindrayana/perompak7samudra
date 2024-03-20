@@ -46,5 +46,15 @@ class Vidhidepro():
                 jscript = re.findall(r"}\('(.*?)'.split", script.text)
                 if jscript:
                     jscripts.append(jscript[0])
+            elif "vplayer" in script.text:
+                # find file:"..."
+                jscript = re.findall(r'{file:"(.*?)"', script.text)
+                if jscript:
+                    jscripts.append(jscript[0])
+            else:
+                # find ".....m3u8"
+                jscript = re.findall(r'".*?m3u8"', script.text)
+
+                
         return jscripts
         
