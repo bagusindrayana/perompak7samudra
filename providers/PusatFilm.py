@@ -77,7 +77,7 @@ class PusatFilm(object):
                         "link": "/api/get?link=" + link + "&provider=PusatFilm",
                         "detail": detailLink,
                         "title": title.strip().rstrip(),
-                        "thumb": thumb,
+                        "thumb": thumb.replace("?resize=246,350",""),
                     }
                 )
         except Exception as e:
