@@ -25,7 +25,7 @@ class OppaDrama(object):
             for article in articles:
                 title = article.find("h2").text.strip().rstrip()
                 link = article.find("a")["href"]
-                thumb = article.find("img")["src"]
+                thumb = article.find("img")["src"].replace("?resize=246,350","")
                 result.append(
                     {
                         "link": "/api/get?link=" + link + "&provider=OppaDrama",
