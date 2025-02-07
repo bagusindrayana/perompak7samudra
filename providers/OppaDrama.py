@@ -4,7 +4,7 @@ import urllib.parse
 
 
 class OppaDrama(object):
-    servers = ["http://oppadrama.biz"]
+    servers = ["https://oppa.biz"]
     sandbox = "allow-scripts allow-same-origin"
 
     def search(self, query,page=1,server=0):
