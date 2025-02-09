@@ -250,13 +250,14 @@ class Idlix(object):
         self.checkLink()
         
         url = link
+        print(url)
 
         payload = {}
         headers = {
             'authority': 'jeniusplay.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'accept-language': 'en-GB,en;q=0.9,en-US;q=0.8,id;q=0.7',
-            'referer': 'https://tv.idlixofficial.co/',
+            'referer': 'https://tv7.idlix.asia/',
             'sec-ch-ua': '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
@@ -265,13 +266,14 @@ class Idlix(object):
             'sec-fetch-site': 'cross-site',
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0',
-            # 'Cookie': 'fireplayer_player=i0idjdpao1k4qlm73d88f08g25'
+            'Cookie': 'fireplayer_player=2srdhq1dtmcaplih581312uens'
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
 
         
         soup = BeautifulSoup(response.text, "html.parser")
+        print(soup.find("title").text)
         # find script index 9
         script = soup.find_all("script")[9].text
         
@@ -288,7 +290,7 @@ class Idlix(object):
         last = link.split("/")[-1]
         url = "https://jeniusplay.com/player/index.php?data="+last+"&do=getVideo"
 
-        payload = "hash=ba3c5e7b68dbdb900c4ee701df6cd6b5&r="+self.servers[0]
+        payload = "hash=23712318a400454a2c049f165106d985&r="+self.servers[0]
         headers = {
             'authority': 'jeniusplay.com',
             'accept': '*/*',
