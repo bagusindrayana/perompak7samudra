@@ -45,8 +45,8 @@ class PusatFilm(object):
         }
         first_request = requests.get(url,headers=headers, verify=False)
         first_request.raise_for_status()
-        url = first_request.url
-        print(url)
+        url = first_request.url.split('?')[0]
+        
        
         result = []
         
@@ -54,7 +54,9 @@ class PusatFilm(object):
             _url = f"{url}/page/{page}?s={query}&post_type[]=post&post_type[]=tv"
         else:
             _url = f"{url}?s={query}&post_type[]=post&post_type[]=tv"
-        
+        print("PAGE : ",page)
+        print("QUERY : ",query)
+        print("URL : ",_url)
         try:
             r = requests.get(_url, headers=headers, verify=False)
             r.raise_for_status()
